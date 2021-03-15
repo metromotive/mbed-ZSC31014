@@ -73,14 +73,14 @@ int main()
     // Are the I2C lines hooked up right?
 
     printf("\n\n\nDepowering the amp.\n");
-    enable.write(0);
+    enable.write(1);
     v33.write(0);
     v323.write(0);
 
     wait_us(2000000);
 
     printf("Powering the amp.\n");
-    enable.write(1);
+    enable.write(0);
     v33.write(1);
     v323.write(1);
 
@@ -92,12 +92,12 @@ int main()
         printf("Unable to write.\n");
     }
      
-    wait_us(1000);
+    //wait_us(1000);
 
     while (true) {
         led = !led;
     
-        printf("Trying to read the ReadZMDI_Config1\n");
+        printf("Trying to read customer id 0\n");
         char command2[3] = { ReadCust_ID0, 0, 0 };
         if (amp.write(address, command2, 3) != 0) {
             printf("Unable to write.\n");
