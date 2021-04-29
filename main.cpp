@@ -3,6 +3,7 @@
 #include "mbed.h"
 #include "PinNames.h"
 #include "objects_gpio.h"
+#include "ZSC31014.h"
 
 // Calibration for LCA.1
 
@@ -19,45 +20,6 @@
 static DigitalOut enable(D24);
 static I2C amp(D25, D27);
 //static I2C amp(QWIIC_SDA, QWIIC_SCL);
-
-enum Commands {
-    ReadCust_ID0 = 0x00,
-    ReadZMDI_Config1,
-    ReadZMDI_Config2,
-    ReadOffset_B,
-    ReadGain_B,
-    ReadTcg,
-    ReadTco,
-    ReadSOT_Tco,
-    ReadSOT_Tcg,
-    ReadSOT_Bridge,
-    ReadOffset_T,
-    ReadGain_T,
-    ReadSOT_T,
-    ReadTsetl,
-    ReadCust_ID1,
-    ReadB_Config,
-    ReadT_Config,
-    ReadOsc_Trim,
-    ReadSignature,
-    ReadCust_ID2,
-    WriteCust_ID0 = 0x40,
-    WriteZMDI_Config1,
-    WriteZMDI_Config2,
-    WriteOffset_B,
-    WriteGain_B,
-    WriteTcg,
-    WriteTco,
-    WriteSOT_Tco,
-    WriteSOT_Tcg,
-    WriteSOT_Bridge,
-    WriteCust_ID1,
-    WriteB_Config,
-    WriteT_Config,
-    WriteCust_ID2,
-    StartNormalOperationMode = 0x80,
-    StartCommandMode = 0xA0
-};
 
 const char address = 0x28 << 1;
 

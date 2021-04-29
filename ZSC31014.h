@@ -1,54 +1,56 @@
 // Copyright 2021 Metromotive
 
-#ifndef ZSC13014_H
-#define ZSC13014_H
+#ifndef ZSC31014_H
+#define ZSC31014_H
+
+#include "DigitalOut.h"
+#include "mbed.h"
+#include <stdint.h>
 
 namespace metromotive {
 
-#include "mbed.h"
-
-class ZSC13014 {
+class ZSC31014 {
 public:
-    ZSC13014(I2C &i2c, char address);
-    
-    enum ClockSpeed {
+    ZSC31014(I2C &i2c, char address, DigitalOut powerPin);
+
+    enum class ClockSpeed {
         mhz4 = 0,
         mhz1 = 1
     };
 
-    enum CommType {
+    enum class CommType {
         i2c = 0,
         spi = 1
     };
 
-    enum OperationMode {
+    enum class OperationMode {
         continuous = 0,
         onDemand = 1
     };
 
-    enum UpdateRate { // 1MHz clock / 4MHz clock
+    enum class UpdateRate { // 1MHz clock / 4MHz clock
         fastest = 0,  //    1.6ms   /   0.5ms
         faster = 1,   //    5.0ms   /   1.5ms
         slower = 2,   //   25.0ms   /   6.5ms
         slowest = 3   //  125.0ms   /  32.0ms
     };
 
-    enum SOTCurve {
+    enum class SOTCurve {
         parabolic = 0,
         sShaped = 1
     };
 
-    enum Polarity {
+    enum class Polarity {
         positive = 0,
         negative = 1
     };
 
-    enum MuxMode {
+    enum class MuxMode {
         fullBridge = 0b10,
         halfBridge = 0b11
-    }
+    };
 
-    enum PreAmpGain {
+    enum class PreAmpGain {
         x1_5 = 0b000,
         x3   = 0b100,
         x6   = 0b001,
@@ -89,7 +91,7 @@ public:
     	bool useLongIntegration;
     	Polarity polarity;
     	PreAmpGain preAmpGain;
-    	PreAmpOffset preAmpOffset;
+    	int preAmpOffset;
     };
 
     struct FactoryID {
@@ -165,22 +167,62 @@ public:
     void lockEEPROM();
 
 private:
-    I2C i2c;
+    I2C &i2c;
     char address;
+    DigitalOut powerPin;
     
+    enum Register {
+        ReadCust_ID0 = 0x00,
+        ReadZMDI_Config1,
+        ReadZMDI_Config2,
+        ReadOffset_B,
+        ReadGain_B,
+        ReadTcg,
+        ReadTco,
+        ReadSOT_Tco,
+        ReadSOT_Tcg,
+        ReadSOT_Bridge,
+        ReadOffset_T,
+        ReadGain_T,
+        ReadSOT_T,
+        ReadTsetl,
+        ReadCust_ID1,
+        ReadB_Config,
+        ReadT_Config,
+        ReadOsc_Trim,
+        ReadSignature,
+        ReadCust_ID2,
+        StartCommandMode = 0x0A,
+        WriteCust_ID0 = 0x40,
+        WriteZMDI_Config1,
+        WriteZMDI_Config2,
+        WriteOffset_B,
+        WriteGain_B,
+        WriteTcg,
+        WriteTco,
+        WriteSOT_Tco,
+        WriteSOT_Tcg,
+        WriteSOT_Bridge,
+        WriteCust_ID1,
+        WriteB_Config,
+        WriteT_Config,
+        WriteCust_ID2,
+        StartNormalOperationMode = 0x80
+    };
+
     // Read/write registers (must be in command mode)
-    int16_t readRegister(char address);
-    void writeRegister(char address, int16_t value);
+    int16_t readRegister(Register regAddress);
+    void writeRegister(Register regAddress, uint16_t value);
     
     struct ZMDIConfig1 getZMDIConfig1();
     struct ZMDIConfig2 getZMDIConfig2();
     struct BridgeConfig getBridgeConfig();
 
-    setZMDIConfig1(struct ZMDIConfig1 zmdiConfig1);
-    setZMDIConfig2(struct ZMDIConfig2 zmdiConfig2);
-    setBridgeConfig(struct BridgeConfig bridgeConfig);
+    void setZMDIConfig1(struct ZMDIConfig1 zmdiConfig1);
+    void setZMDIConfig2(struct ZMDIConfig2 zmdiConfig2);
+    void setBridgeConfig(struct BridgeConfig bridgeConfig);
 };
 
 } // namespace metromotive
 
-#endif ZSC13014_H
+#endif //ZSC31014_H
