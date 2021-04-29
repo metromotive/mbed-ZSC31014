@@ -11,7 +11,7 @@ namespace metromotive {
 
 class ZSC31014 {
 public:
-    ZSC31014(I2C &i2c, char address, DigitalOut powerPin);
+    ZSC31014(I2C &i2c, char address7bit, DigitalOut powerPin);
 
     enum class ClockSpeed {
         mhz4 = 0,
@@ -168,10 +168,10 @@ public:
 
 private:
     I2C &i2c;
-    char address;
+    char address; // Stored as 8-bit address with lsb set to 0
     DigitalOut powerPin;
     
-    enum Register {
+    enum ReadCommand {
         ReadCust_ID0 = 0x00,
         ReadZMDI_Config1,
         ReadZMDI_Config2,
@@ -192,6 +192,9 @@ private:
         ReadOsc_Trim,
         ReadSignature,
         ReadCust_ID2,
+    };
+
+    enum WriteCommand {
         StartCommandMode = 0x0A,
         WriteCust_ID0 = 0x40,
         WriteZMDI_Config1,
@@ -211,8 +214,8 @@ private:
     };
 
     // Read/write registers (must be in command mode)
-    int16_t readRegister(Register regAddress);
-    void writeRegister(Register regAddress, uint16_t value);
+    uint16_t read(ReadCommand readCommand);
+    void write(WriteCommand writeCommand, uint16_t value = 0x0000);
     
     struct ZMDIConfig1 getZMDIConfig1();
     struct ZMDIConfig2 getZMDIConfig2();

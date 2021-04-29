@@ -2,7 +2,7 @@
 
 #include "mbed.h"
 #include "PinNames.h"
-#include "objects_gpio.h"
+//#include "objects_gpio.h"
 #include "ZSC31014.h"
 
 // Calibration for LCA.1
@@ -12,62 +12,53 @@
 // Set the I2C address
 // Set the customer ID fields?
 
-
+using namespace metromotive;
 
 // Blinking rate in milliseconds
 #define BLINKING_RATE     500ms
 
-static DigitalOut enable(D24);
-static I2C amp(D25, D27);
-//static I2C amp(QWIIC_SDA, QWIIC_SCL);
+static DigitalOut enable(PC_13);
+static I2C i2c(PB_9, PB_8);
 
-const char address = 0x28 << 1;
+const char address = 0x28;
+
+static ZSC31014 lca(i2c, address, enable);
 
 int main()
 {
     // Initialise the digital pin LED1 as an output
     DigitalOut led(LED1);
 
-    amp.frequency(400000);
+    led.write(1);
 
-    printf("\n\n\nDepowering the amp.\n");
-    enable.write(0);
+    lca.startCommandMode();
 
-    wait_us(1000);
- 
-    // printf("Powering the amp and Starting command mode.\n");
-    enable.write(1);
+    int customerID0 = lca.getCustomerID0();
+    int customerID1 = lca.getCustomerID1();
+    int customerID2 = lca.getCustomerID2();
 
-    // wait_us(500);
+    printf("Customer IDs are %d, %d, %d.\n", customerID0, customerID1, customerID2);
 
-    // char command1[3] = { StartCommandMode, 0, 0 };
-    // if (amp.write(address, command1, 3) != 0) {
-    //     printf("Unable to write.\n");
-    // }
- 
-    while (true) {
-        led = !led;
-        char readData[3] = { 0 };
-
-        if (amp.read(address, readData, 3) != 0) {
-            printf("Unable to read.\n");
-        } else {
-            printf("Readed %d, %d, %d from device.\n", readData[0], readData[1], readData[2]);
-        }
-
-        // printf("Trying to read customer id 0\n");
-        // char command2[3] = { ReadCust_ID0, 0, 0 };
-        // if (amp.write(address, command2, 3) != 0) {
-        //     printf("Unable to write.\n");
-        // }
-
-        // //char readData[3] = { 0 };
-        // if (amp.read(address, readData, 3) != 0) {
-        //     printf("Unable to read.\n");
-        // } else {
-        //     printf("Readed %d, %d, %d from customer ID 0.\n", readData[0], readData[1], readData[2]);
-        // }
-
-        ThisThread::sleep_for(BLINKING_RATE);
-    }
+    led.write(0);
 }
+
+// int main()
+// {
+//     // Initialise the digital pin LED1 as an output
+//     DigitalOut led(LED1);
+
+//     enable.write(0);
+
+//     wait_us(1000);
+ 
+//     // printf("Powering the amp and Starting command mode.\n");
+//     enable.write(1);
+ 
+//     while (true) {
+//         led = !led;
+
+//         printf("hello!\n");
+
+//         ThisThread::sleep_for(BLINKING_RATE);
+//     }
+// }
