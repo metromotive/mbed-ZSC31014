@@ -1,7 +1,6 @@
 // Copyright 2021, Metromotive
 
 #include "mbed.h"
-#include "PinNames.h"
 #include "ZSC31014.h"
 
 // Calibration for LCA.1
@@ -14,9 +13,6 @@ static ZSC31014 lca(amp, 0x28, enable);
 
 int main()
 {
-    // Initialise the digital pin LED1 as an output
-    DigitalOut led(LED1);
-
     lca.startCommandMode();
 
     int customerID0 = lca.getCustomerID0();

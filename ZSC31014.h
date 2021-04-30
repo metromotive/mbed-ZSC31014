@@ -171,7 +171,7 @@ private:
     char address; // Stored as 8-bit address with lsb set to 0
     DigitalOut powerPin;
     
-    enum ReadCommand {
+    enum Command {
         ReadCust_ID0 = 0x00,
         ReadZMDI_Config1,
         ReadZMDI_Config2,
@@ -192,9 +192,6 @@ private:
         ReadOsc_Trim,
         ReadSignature,
         ReadCust_ID2,
-    };
-
-    enum WriteCommand {
         StartCommandMode = 0xA0,
         WriteCust_ID0 = 0x40,
         WriteZMDI_Config1,
@@ -214,8 +211,8 @@ private:
     };
 
     // Read/write registers (must be in command mode)
-    uint16_t read(ReadCommand readCommand);
-    void write(WriteCommand writeCommand, uint16_t value = 0x0000);
+    uint16_t read(Command readCommand);
+    void write(Command writeCommand, uint16_t value = 0x0000);
     
     struct ZMDIConfig1 getZMDIConfig1();
     struct ZMDIConfig2 getZMDIConfig2();
