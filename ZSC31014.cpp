@@ -20,7 +20,7 @@ void ZSC31014::startCommandMode() {
  
     powerPin.write(1);
 
-    wait_us(1000);
+    wait_us(500);
 
     this->write(StartCommandMode);
 
