@@ -195,7 +195,7 @@ private:
     };
 
     enum WriteCommand {
-        StartCommandMode = 0x0A,
+        StartCommandMode = 0xA0,
         WriteCust_ID0 = 0x40,
         WriteZMDI_Config1,
         WriteZMDI_Config2,

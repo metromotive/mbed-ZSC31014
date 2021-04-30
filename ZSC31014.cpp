@@ -14,22 +14,17 @@ ZSC31014::ZSC31014(I2C &i2c, char address7bit, DigitalOut powerPin) :
 }
 
 void ZSC31014::startCommandMode() {
-    char command[3] = { StartCommandMode, 0, 0 };
-
-    printf("Power cycling the amp and entering command mode.\n");
     powerPin.write(0);
 
     wait_us(1000000);
  
     powerPin.write(1);
 
-    wait_us(500);
+    wait_us(1000);
 
-    if (i2c.write(address, command, 3) != 0) {
-        printf("Unable to write.\n");
-    }
+    this->write(StartCommandMode);
 
-    wait_us(100);
+    wait_us(10);
 }
 
 void ZSC31014::startNormalOperationMode() {
@@ -72,10 +67,14 @@ uint16_t ZSC31014::read(ReadCommand command) {
 }
 
 void ZSC31014::write(WriteCommand command, uint16_t value) {
-  char packet[3] = { command, (char)(value >> 8), (char)(value & 0xFF) };
-  if (this->i2c.write(address, packet, 3) != 0) {
-    printf("Unable to write to device. Check i2c address and connections.\n");
-  }
+    char packet[3] = { command, (char)(value >> 8), (char)(value & 0xFF) };
+    if (this->i2c.write(address, packet, 3) != 0) {
+        printf("Unable to write to device. Check i2c address and connections.\n");
+    }
+// char packet[3] = { command, (char)(value >> 8), (char)(value & 0xFF) };
+//   if (this->i2c.write(address, packet, 3) != 0) {
+//     printf("Unable to write to device. Check i2c address and connections.\n");
+//   }
 }
 
 } // namespace metromotive
