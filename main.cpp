@@ -2,7 +2,6 @@
 
 #include "mbed.h"
 #include "PinNames.h"
-//#include "objects_gpio.h"
 #include "ZSC31014.h"
 
 // Calibration for LCA.1
@@ -33,32 +32,12 @@ int main()
 
     lca.startCommandMode();
 
-    int customerID0 = lca.getCustomerID0();
-    int customerID1 = lca.getCustomerID1();
-    int customerID2 = lca.getCustomerID2();
+   int customerID0 = lca.getCustomerID0();
+   int customerID1 = lca.getCustomerID1();
+   int customerID2 = lca.getCustomerID2();
 
     printf("Customer IDs are %d, %d, %d.\n", customerID0, customerID1, customerID2);
+    // printf("Got here.\n");
 
     led.write(0);
 }
-
-// int main()
-// {
-//     // Initialise the digital pin LED1 as an output
-//     DigitalOut led(LED1);
-
-//     enable.write(0);
-
-//     wait_us(1000);
- 
-//     // printf("Powering the amp and Starting command mode.\n");
-//     enable.write(1);
- 
-//     while (true) {
-//         led = !led;
-
-//         printf("hello!\n");
-
-//         ThisThread::sleep_for(BLINKING_RATE);
-//     }
-// }
