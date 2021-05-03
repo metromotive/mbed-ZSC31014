@@ -116,36 +116,21 @@ public:
     void setCustomerID1(uint16_t customerID1);
     void setCustomerID2(uint16_t customerID2);
     
-    // Configuration (can typically be set without first measuring individual unit)
-    ClockSpeed getClockSpeed();
-    CommType getCommType();
-    OperationMode getOperationMode();
-    UpdateRate getUpdateRate();
-    Polarity getSPIPolarity();
-    char getI2CAddress();
-    bool isI2CAddressLocked();
-    
-    void setClockSpeed(ClockSpeed clockSpeed);
-    void setCommType(CommType commType);
-    void setOperationMode(OperationMode operationMode);
-    void setUpdateRate(UpdateRate updateRate);
-    void setSPIPolarity(Polarity spiPolarity);
-    void setI2CAddress(char i2cAddress);
-    void setI2CAddressLocked(bool locked);
-    
-    // Analog correction settings (ditto)
-    int getPreAmpOffset();
-    PreAmpGain getPreAmpGain();
-    
-    void setAnalogOffset(int preAmpOffset);
-    void setAnalogGain(PreAmpGain preAmpGain);
+    // Configuration settings
+    struct ZMDIConfig1 getZMDIConfig1();
+    struct ZMDIConfig2 getZMDIConfig2();
+    struct BridgeConfig getBridgeConfig();
+
+    void setZMDIConfig1(struct ZMDIConfig1 zmdiConfig1);
+    void setZMDIConfig2(struct ZMDIConfig2 zmdiConfig2);
+    void setBridgeConfig(struct BridgeConfig bridgeConfig);
     
     // First-order correction settings
-    int16_t getOffset();
-    int32_t getGain();
+    uint16_t getOffset();
+    uint32_t getGain();
 
-    void setOffset(int16_t offset);
-    void setGain(int32_t gain);
+    void setOffset(uint16_t offset);
+    void setGain(uint32_t gain);
     
     // Second-order correction settings
     SOTCurve getSecondOrderTemperatureCurve();
@@ -162,6 +147,8 @@ public:
     void setGainTemperatureCorrectionSecondOrderTerm(int sotTCO);
     void setSecondOrderTerm(int sot);
     
+    void dumpEEPROM();
+
     // Danger Zone
     bool isEEPROMLocked();
     void lockEEPROM();
@@ -203,9 +190,15 @@ private:
         WriteSOT_Tco,
         WriteSOT_Tcg,
         WriteSOT_Bridge,
+        _WriteOffset_T,
+        _WriteGain_T,
+        _WriteSOT_T,
+        _WriteTsetl,
         WriteCust_ID1,
         WriteB_Config,
-        WriteT_Config,
+        _WriteT_Config,
+        _WriteOsc_Trim,
+        _WriteSignature,
         WriteCust_ID2,
         StartNormalOperationMode = 0x80
     };
@@ -214,13 +207,13 @@ private:
     uint16_t read(Command readCommand);
     void write(Command writeCommand, uint16_t value = 0x0000);
     
-    struct ZMDIConfig1 getZMDIConfig1();
-    struct ZMDIConfig2 getZMDIConfig2();
-    struct BridgeConfig getBridgeConfig();
+    struct ZMDIConfig1 decodeZMDIConfig1(uint16_t rawValue);
+    struct ZMDIConfig2 decodeZMDIConfig2(uint16_t rawValue);
+    struct BridgeConfig decodeBridgeConfig(uint16_t rawValue);
 
-    void setZMDIConfig1(struct ZMDIConfig1 zmdiConfig1);
-    void setZMDIConfig2(struct ZMDIConfig2 zmdiConfig2);
-    void setBridgeConfig(struct BridgeConfig bridgeConfig);
+    uint16_t encodeZMDIConfig1(struct ZMDIConfig1 zmdiConfig1);
+    uint16_t encodeZMDIConfig2(struct ZMDIConfig2 zmdiConfig2);
+    uint16_t encodeBridgeConfig(struct BridgeConfig bridgeConfig);
 };
 
 } // namespace metromotive
