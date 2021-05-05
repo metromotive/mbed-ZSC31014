@@ -55,18 +55,6 @@ void ZSC31014::setCustomerID2(uint16_t customerID2) {
     this->write(WriteCust_ID2, customerID2);
 }
 
-char ZSC31014::getI2CAddress() {
-    return (this->read(ReadZMDI_Config2) >> 3) & 0x7F;
-}
-
-void ZSC31014::setI2CAddress(char i2cAddress) {
-    struct ZMDIConfig2 zmdiConfig2 = this->getZMDIConfig2();
-
-    zmdiConfig2.slaveAddress = i2cAddress;
-
-    this->setZMDIConfig2(zmdiConfig2);
-}
-
 struct ZSC31014::FactoryID ZSC31014::getFactoryID() {
     uint16_t customerID0 = this->getCustomerID0();
     uint16_t customerID1 = this->getCustomerID1();
@@ -106,12 +94,20 @@ void ZSC31014::setBridgeConfig(struct BridgeConfig bridgeConfig) {
     this->write(WriteB_Config, this->encodeBridgeConfig(bridgeConfig));
 }
 
-uint16_t ZSC31014::getOffset() {
+int16_t ZSC31014::getOffset() {
     return this->read(ReadOffset_B);
 }
 
-void ZSC31014::setOffset(uint16_t offset) {
+void ZSC31014::setOffset(int16_t offset) {
     this->write(WriteOffset_B, offset);
+}
+
+float ZSC31014::getGain() {
+    return this->decodeGain(this->read(ReadGain_B));
+}
+
+void ZSC31014::setGain(float gain) {
+    this->write(WriteGain_B, this->encodeGain(gain));
 }
 
 void ZSC31014::dumpEEPROM() {
@@ -121,6 +117,16 @@ void ZSC31014::dumpEEPROM() {
         printf("0x%02x: 0x%04x\n", i, value);
         wait_us(10);
     }
+}
+
+void ZSC31014::powerCycle() {
+    powerPin.write(0);
+
+    wait_us(500);
+
+    powerPin.write(1);
+
+    wait_us(500);
 }
 
 uint16_t ZSC31014::read(Command command) {
@@ -392,6 +398,33 @@ uint16_t ZSC31014::encodeBridgeConfig(struct BridgeConfig bridgeConfig) {
     result |= idtReservedBits << 13;
 
     return result;
+}
+
+float ZSC31014::decodeGain(uint16_t rawValue) {
+    float gain = (float)(rawValue & 0x7FFF) / (float)(1 << 13);
+
+    if (rawValue & 0x8000) {
+      gain *= 8;
+    }
+
+    return gain;
+}
+
+uint16_t ZSC31014::encodeGain(float gain) {
+    uint16_t encodedGain = 0x0000;
+
+    if (gain >= 32) {
+        printf("Gain out of range");
+        return 0;
+    } else if (gain >= 4) {
+        gain /= 8;
+        encodedGain |= 0x8000;
+    }
+
+    // Gain is fixed point with 2^13 in the 1s place.
+    uint16_t fixedPointGain = gain * (1 << 13);
+
+    return encodedGain |= fixedPointGain;
 }
 
 } // namespace metromotive

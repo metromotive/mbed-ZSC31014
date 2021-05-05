@@ -126,11 +126,11 @@ public:
     void setBridgeConfig(struct BridgeConfig bridgeConfig);
     
     // First-order correction settings
-    uint16_t getOffset();
-    uint32_t getGain();
+    int16_t getOffset();
+    float getGain();
 
-    void setOffset(uint16_t offset);
-    void setGain(uint32_t gain);
+    void setOffset(int16_t offset);
+    void setGain(float gain);
     
     // Second-order correction settings
     SOTCurve getSecondOrderTemperatureCurve();
@@ -148,6 +148,7 @@ public:
     void setSecondOrderTerm(int sot);
     
     void dumpEEPROM();
+    void powerCycle();
 
     // Danger Zone
     bool isEEPROMLocked();
@@ -214,6 +215,9 @@ private:
     uint16_t encodeZMDIConfig1(struct ZMDIConfig1 zmdiConfig1);
     uint16_t encodeZMDIConfig2(struct ZMDIConfig2 zmdiConfig2);
     uint16_t encodeBridgeConfig(struct BridgeConfig bridgeConfig);
+
+    float decodeGain(uint16_t rawValue);
+    uint16_t encodeGain(float gain);
 };
 
 } // namespace metromotive
