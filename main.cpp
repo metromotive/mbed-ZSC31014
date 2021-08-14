@@ -74,7 +74,7 @@ int main()
 
     ThisThread::sleep_for(15ms);
 
-    printf("Wrote customer IDs and started normal operation mode.\n");
+    printf("Wrote basic configuration and started normal operation mode.\n");
 
     while(1) {
         char reading[4] = {0, 0, 0, 0};
