@@ -2,7 +2,7 @@
 
 Driver and initial attempt at a calibration setup for the [Renesas/IDT ZSC31014 strain gauge amplifier IC](https://www.renesas.com/us/en/document/dst/zsc31014-datasheet). Currently set up for running under [mBed OS](https://os.mbed.com/mbed-os/), but you really only need to be able to toggle a GPIO and read/write to an I2C bus (The IC doesn't support using SPI for this step). 
 
-*Note*: You probably don't need a driver for simply reading values from the IC. It's a normal I2C read operation from the device's address, and depending on the number of bytes you read you can get just strain gauge information (send the address, read 2 bytes) or also temperature (read 1 or 2 additional bytes). See section 3.2 of the aforelinked datasheet. This driver is intended to help with setting up and calibrating the IC. 
+> You probably don't need a driver for simply reading values from the IC. It's a normal I2C read operation from the device's address, and depending on the number of bytes you read you can get just strain gauge information (send the address, read 2 bytes) or also temperature (read 1 or 2 additional bytes). See section 3.2 of the aforelinked datasheet. This driver is intended to help with setting up and calibrating the IC. 
 
 To enter command mode (which allows you to actually read and write from/to the configuration/calibration registers), you'll need to send a command within a few hundred microseconds of powering the device. If you don't have much else on the same power supply you can probably just use a GPIO pin to power the IC, which is what this code assumes. 
 
