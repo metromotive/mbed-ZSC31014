@@ -36,6 +36,7 @@ The calibration process is described in section 3.7 of the datasheet in much mor
 1. mBed uses 8-bit I2C addresses, and normal right-thinking people use 7-bit I2C addresses. This driver attempts to compensate for that discrepancy. 
 2. Adding helpful `printf`s at the wrong place will make e.g. the `startCommandMode` method fail because they're sufficiently slow to throw off the timing. 
 3. As described above, it's helpful to dump the contents of the EEPROM in case you screw something up (or in case I screwed something up in this code). 
+4. I'm not a C++ programmer, so this might not be especially idiomatic C++ (to the extent that such a thing exists). 
 
 
 
