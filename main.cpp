@@ -11,9 +11,9 @@
 
 using namespace metromotive;
 
-static DigitalOut enable(PC_13);
-static I2C i2c(PB_9, PB_8);
-static ZSC31014 lca(i2c, 0x3F, enable);
+static DigitalOut enable(PC_13); // The GPIO that you use to power the IC.
+static I2C i2c(PB_9, PB_8); // The I2C bus SDA/SCL pins.
+static ZSC31014 lca(i2c, 0x28, enable); // The ZSC31014 IC, using the default address.
 
 int main()
 {
@@ -35,35 +35,6 @@ int main()
         i2cAddress
     );
 
-    customerID0 = MM_ID;
-    customerID1 = 0x1CA1;
-
-    int serialNumber;
-    printf("\nEnter serial #: ");
-    scanf("%d", &serialNumber);
-
-    if (serialNumber % 2 == 1) {
-        // Odd serial numbers are forward.
-        i2cAddress = 0x3F;
-    } else {
-        // Even serial numbers are aft.
-        i2cAddress = 0x3A;
-    }
-
-    customerID2 = serialNumber;
-
-    lca.setCustomerID0(customerID0);
-
-    ThisThread::sleep_for(15ms);
-
-    lca.setCustomerID1(customerID1);
-
-    ThisThread::sleep_for(15ms);
-
-    lca.setCustomerID2(customerID2);
-
-    ThisThread::sleep_for(15ms);
-
     struct ZSC31014::ZMDIConfig1 zmdiConfig1 = lca.getZMDIConfig1();
 
     zmdiConfig1.updateRate = ZSC31014::UpdateRate::fastest;
@@ -76,7 +47,7 @@ int main()
 
     zmdiConfig2.enableSensorConnectionCheck = 1;
     zmdiConfig2.enableSensorShortCheck = 1;
-    zmdiConfig2.slaveAddress = 0x3F;
+    zmdiConfig2.slaveAddress = 0x28; // Set to whatever you want this to be.
     zmdiConfig2.lockAddress = true;
     zmdiConfig2.lockEEPROM = false;
 
