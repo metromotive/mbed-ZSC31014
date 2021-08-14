@@ -10,7 +10,7 @@ To enter command mode (which allows you to actually read and write from/to the c
 
 The calibration process is described in section 3.7 of the datasheet in much more detail than I'm going to go over here, so these are more tips and tricks and TL;DR overview. 
 
-1. I would recommend running the `dumpEEPROM()` method and copying the result somewhere safe so that if you (or this driver) accidentally overwrites something unintended, you can recover the initial configuration (unless you accidentally run the lock EEPROM command, in which case your device can be bricked). 
+1. I would recommend running the `dumpEEPROM()` method and copying the result somewhere safe so that if you (or this driver) accidentally overwrites something unintended, you can recover the initial configuration (unless you accidentally run the lock EEPROM command, in which case your device can be bricked). The temperature sensing is factory-calibrated and evidently kind of a pain to recreate. 
 2. The first hoop to jump through is actually getting the device in command mode. You need to send the `Start_CM` command within 1.5 milliseconds of applying power to the device, but after the device has had a chance to finish powering up. The delays in `startCommandMode` are what worked for me, but YMMV. 
 3. The main things to set up initially are:
   - The I2C address (or set it up to use SPI mode), and whether to listen only on that address (`lockAddress`)
