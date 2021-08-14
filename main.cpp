@@ -7,8 +7,6 @@
 
 // Calibration for LCA.1
 
-#define MM_ID 0x4D6D
-
 using namespace metromotive;
 
 static DigitalOut enable(PC_13); // The GPIO that you use to power the IC.
