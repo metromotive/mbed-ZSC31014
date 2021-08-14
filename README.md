@@ -6,6 +6,8 @@ Driver and initial attempt at a calibration setup for the [Renesas/IDT ZSC31014 
 
 To enter command mode (which allows you to actually read and write from/to the configuration/calibration registers), you'll need to send a command within a few hundred microseconds of powering the device. If you don't have much else on the same power supply you can probably just use a GPIO pin to power the IC, which is what this code assumes. 
 
+I ran this on a ST Micro Nucleo WB55 board. The pin assignments for the GPIO and I2C will probably be different on your board. 
+
 ## The Calibration Process
 
 The calibration process is described in section 3.7 of the datasheet in much more detail than I'm going to go over here, so these are more tips and tricks and TL;DR overview. 
